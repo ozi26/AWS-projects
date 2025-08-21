@@ -1,2 +1,0 @@
-# AWS-projects
-Self-learning
