@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Random Joke Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+      --button: #2563eb;
+      --button-hover: #1d4ed8;
+      --success: #16a34a;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0; background: radial-gradient(1200px 800px at 70% 20%, #111827, #0b1226), var(--bg);
+      color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; min-height: 100vh;
+      display: grid; place-items: center;
+    }
+    .wrap { width: 100%; max-width: 720px; padding: 24px; }
+    .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+      border-radius: 20px; padding: 28px; box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: 0.2px; }
+    p.sub { margin: 0 0 18px; color: var(--muted); }
+    .joke {
+      display: none;
+      background: #0b132a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 16px; margin: 18px 0 0;
+      line-height: 1.6;
+    }
+    .setup { font-size: 18px; }
+    .punchline { margin-top: 10px; font-weight: 600; color: var(--accent); }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    button {
+      appearance: none; cursor: pointer; border: 0; padding: 12px 16px;
+      background: var(--button); color: white; border-radius: 12px; font-weight: 600; font-size: 15px;
+      transition: transform 0.04s ease, background 0.2s ease; box-shadow: 0 6px 16px rgba(37,99,235,0.35);
+    }
+    button:hover { background: var(--button-hover); transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    .status { font-size: 13px; color: var(--muted); }
+    .ok { color: var(--success); }
+    .bad { color: var(--error); }
+    .footer {
+      margin-top: 16px; font-size: 12px; color: var(--muted);
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>😂 Random Joke Generator</h1>
+      <p class="sub">Click the button to fetch a fresh joke from your AWS API.</p>
+
+      <div class="row">
+        <button id="getJokeBtn" aria-label="Get a new joke">Get Joke</button>
+        <span id="status" class="status">Idle</span>
+      </div>
+
+      <div id="jokeBox" class="joke" role="region" aria-live="polite">
+        <div id="setup" class="setup"></div>
+        <div id="punchline" class="punchline"></div>
+      </div>
+
+      <div class="footer">
+        API: <code id="apiUrl">YOUR_API_URL_HERE</code>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1) Paste your API URL (with /joke) below:
+    const API_URL = 'https://lvch5w6mzb.execute-api.us-east-1.amazonaws.com/joke';
+
+    const btn = document.getElementById('getJokeBtn');
+    const statusEl = document.getElementById('status');
+    const box = document.getElementById('jokeBox');
+    const setupEl = document.getElementById('setup');
+    const punchEl = document.getElementById('punchline');
+    document.getElementById('apiUrl').textContent = API_URL;
+
+    function setStatus(text, isError = false) {
+      statusEl.textContent = text;
+      statusEl.className = 'status ' + (isError ? 'bad' : 'ok');
+    }
+
+    async function getJoke() {
+      box.style.display = 'none';
+      setStatus('Fetching...', false);
+
+      try {
+        // Important: Do NOT set Content-Type for GET (avoids CORS preflight).
+        const res = await fetch(API_URL, { method: 'GET', cache: 'no-store' });
+
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`HTTP ${res.status}: ${text}`);
+        }
+
+        const data = await res.json();
+        setupEl.textContent = data.setup || 'No setup.';
+        punchEl.textContent = data.punchline || 'No punchline.';
+        box.style.display = 'block';
+        setStatus('Success ✓', false);
+      } catch (err) {
+        console.error(err);
+        setStatus('Failed to fetch joke', true);
+        alert('Error: ' + err.message);
+      }
+    }
+
+    btn.addEventListener('click', getJoke);
+  </script>
+</body>
+</html>
 
