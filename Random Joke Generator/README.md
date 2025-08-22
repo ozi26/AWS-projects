@@ -1,8 +1,21 @@
-# Random Joke Generator (AWS)
+# 😂 Random Joke Generator (AWS Cloud Project)
 
-A cloud-native serverless application that generates jokes from an API using Amazon Lambda, API Gateway...
+A beginner-friendly AWS Cloud project that demonstrates how to integrate **API Gateway**, **Lambda**, and a **Frontend Website** to fetch and display random jokes from a public API.
 
 ---
+
+## 📌 Project Overview
+
+The **Random Joke Generator** is a simple full-stack cloud project that:
+
+- Uses **AWS Lambda** as a backend function.
+- Fetches jokes from the public API: [`https://official-joke-api.appspot.com`](https://official-joke-api.appspot.com).
+- Exposes the Lambda function via **Amazon API Gateway** (`GET /joke` endpoint).
+- Displays the joke on a **frontend web page** (HTML, CSS, JavaScript).
+- Teaches **CORS configuration**, **API Gateway integration**, and **Lambda proxying**.
+
+---
+
 
 ## 📝 Table of Contents
 - [Overview](#overview)
@@ -15,39 +28,9 @@ A cloud-native serverless application that generates jokes from an API using Ama
 - [Future Improvements](#future-improvements)
 
 ---
-
-## ✅ Overview
-
-Brief description of what the project does.
-
-> Example: This project is a serverless image resizer that allows users to upload an image and return a resized version using AWS Lambda, API Gateway and S3.
-
----
-
 ## 🏗️ Architecture
 
 (Optional diagram or description of the cloud architecture)
-
-
-
-Frontend: A single HTML file with a “Get Joke” button.
-
-Backend: AWS Lambda (Node.js 20) that fetches from the public joke API.
-
-API layer: API Gateway (HTTP API) exposes a GET /joke endpoint.
-
-CORS: Enabled so your browser can call the API.
-
-Prerequisites (Windows)
-
-An AWS account (free tier is fine).
-
-A modern browser (Chrome/Edge/Firefox).
-
-(Optional but handy) Python 3 installed so you can run a tiny local web server:
-In PowerShell: python --version → if missing, download from python.org.
-
-(Optional) VS Code to edit files comfortably.
 
 ---
 
