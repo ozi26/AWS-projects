@@ -1,1 +1,55 @@
+// index.mjs (Node.js 20+; works fine in Lambda with "index.handler" as the handler)
+// If your editor shows index.js, it's fine—Lambda supports both in Node 20.
+
+const DEFAULT_API = 'https://official-joke-api.appspot.com/random_joke';
+
+exports.handler = async (event) => {
+  const apiUrl = process.env.JOKE_API_URL || DEFAULT_API;
+
+  try {
+    // Timeout protection for the upstream call (5 seconds)
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch(apiUrl, { signal: controller.signal });
+    clearTimeout(timer);
+
+    if (!response.ok) {
+      throw new Error(`Upstream returned status ${response.status}`);
+    }
+
+    const joke = await response.json();
+    const payload = {
+      id: joke.id ?? null,
+      type: joke.type ?? null,
+      setup: joke.setup ?? 'No setup provided.',
+      punchline: joke.punchline ?? 'No punchline provided.',
+      source: 'official-joke-api.appspot.com'
+    };
+
+    // Return CORS headers to be extra-friendly for browsers.
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',        // dev-friendly; restrict in prod
+        'Access-Control-Allow-Methods': 'GET,OPTIONS'
+      },
+      body: JSON.stringify(payload)
+    };
+  } catch (err) {
+    console.error('Error fetching joke:', err);
+    return {
+      statusCode: 502,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,OPTIONS'
+      },
+      body: JSON.stringify({
+        error: 'Failed to fetch a joke. Please try again later.'
+      })
+    };
+  }
+};
 
