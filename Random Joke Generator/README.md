@@ -112,6 +112,21 @@ Step ❹  Build the Frontend (single file).  Create a new file on your PC: `inde
   + Enable → Index document: index.html → Save.
   + Copy the Bucket website endpoint (e.g., http://praise-random-joke-123.s3-website-us-east-1.amazonaws.com).
   + Permissions → Bucket policy → Edit → paste (replace YOUR_BUCKET_NAME):
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+       {
+      "Sid": "PublicReadForStaticWebsite",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+        }
+      ]
+    }
+  ```
+
  
 
 
