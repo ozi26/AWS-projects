@@ -22,8 +22,8 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - [Features](#features)
 - [AWS Services Used](#aws-services-used)
 - [Prerequisites](#prerequisites)
-- [How It Works](#How-it-works).
-- [AWS Setup Instructions](#AWS-Setup-Instructions)
+- [How It Works](#how-it-works)
+- [AWS Setup Instructions](#aws-setup-instructions)
 - [Future Improvements](#future-improvements)
 
 ---
