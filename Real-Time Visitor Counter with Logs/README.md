@@ -176,7 +176,7 @@ Deploy:
   
   + In the API’s left sidebar, click CORS (or during creation if prompted).
   + Enable CORS.
-  + Allow origins: `* `(dev-friendly; you can restrict later to your exact domain)
+  + Allow origins: `*`(dev-friendly; you can restrict later to your exact domain)
   + Allow methods: `GET`, `OPTIONS`
   + Allow headers: `Content-Type`
   + Expose headers: (leave empty)
