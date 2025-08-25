@@ -35,7 +35,8 @@ This project provides:
 
 # Architecture
 
-<img width="1536" height="1024" alt="Architectural diagram (vcl)" src="https://github.com/user-attachments/assets/ba8e35d2-bb0a-4d0a-94e8-3570a704d4a2" />
+
+<img width="1615" height="964" alt="architecture" src="https://github.com/user-attachments/assets/677f4c92-314f-4194-bcd9-72ec02199839" />
 
 
 ---
@@ -102,47 +103,74 @@ Step 1️⃣
   + Open `IAM` → `Roles` → Create role.
   + Trusted entity type: AWS service.
   + Use case: Choose Lambda → Next.
-  +  Permissions: Search and attach AWSLambdaBasicExecutionRole
+  +  Permissions: Search and attach `AWSLambdaBasicExecutionRole`, `AWSDynamoDBFullAccess`.
     (This lets Lambda write logs to CloudWatch).
-  + Role name: `lambda-joke-role → Create role`.
+  + Role name: `lambda-Visitor-count-role `
+  +  Create role`.
 ---
 Step 2️⃣ 
-+ Create the Lambda function (`python 3.18x`)
++ Setup DynamoDB Tables
+
+  VisitorCounter Table
+  
+   + Partition key: `id `(String)
+   + Item: `{ "id": "counter", "count": 0 }`
+     
+    VisitLogs Table
+  
+   + Partition key: `visit_id` (String, UUID)
+   + Attributes: `timestamp`, `ip`,` user_agent`
+---
+Step 3️⃣ 
++ Create two (2) Lambda functions (`python 3.12`)
   
   + Go to `AWS Lambda` → Create function.
   + Author from scratch:
-  + Function name: random-joke-lambda
-  + Runtime: `Node.js 20.x`
+  + Function name: `Visitors Count`
+  + Runtime: `python 3.12`
   + Architecture: `x86_64` (default is fine)
   + Change default execution role: Use an existing role → select lambda-joke-role
   + Click Create function.
   + Add the code
-  + In the code editor (`index.mjs` or `index.js` area), replace the contents with your lambda code.
+  + Replace the contents with your lambda code.
     
-+ Set environment variable (optional)
++ Repeat the same process for the second function.
   
-  + In the Lambda’s Configuration tab → Environment variables → Edit → Add:
-  + Key: `JOKE_API_URL`
-  + Value: `https://official-joke-api.appspot.com/random_joke`
-  + Save. (This makes it easy to switch APIs later.)
-    
+   + Function name: `Visitors Logs`
+  
 + Increase Lambda timeout
   
   + Configuration → General configuration → Edit:
-  + Timeout: set to 10 seconds → Save.
-  + Test the function
+  + Timeout: set to `10` seconds → Save.
+  
 ---
-Step 3️⃣
-+ Create the API Gateway HTTP API ( We’ll expose a GET /joke route that invokes your Lambda ).
-  
-  + Go to API Gateway → Create API → choose HTTP API (not REST).
-  + Build → Add integration: choose Lambda → select your region & random-joke-lambda.
-    
-+ Configure routes:
-  
-  + Method: `GET`
-  + Resource path: `/joke`
-  + Integration target: your Lambda
+Step 4️⃣
++ Create the API Gateway HTTP API.
+
+   + Go to API Gateway Console → Create API.
+   + Choose HTTP API → Click Build.
+   + Configure:
+      + Name: `VisitorCounterAPI`
+   + Click Next
+     
++ Add an integration
+   + Integration target: Lambda Function
+   + Select UpdateVisitorCount
+
+Route Settings:
+
+Add a route: GET. 
+   + Endpoint 1: `/count` → Lambda: `visitors_count`
+   + Endpoint 2: `/logs` → Lambda: `visitors_logs`
+   + Click Next
+
+Deploy:
+
++ Stage name: `prod`
+   + Click Deploy
+   + Copy the Invoke URL (you’ll use this in your frontend).
+
+ > Example: https://abc123xyz.execute-api.region.amazonaws.com/count
     
 + CORS (important):
   
@@ -153,14 +181,10 @@ Step 3️⃣
   + Allow headers: `Content-Type`
   + Expose headers: (leave empty)
   + Save.
-  + Deploy (HTTP APIs auto-create a $default stage, but ensure you Deploy or Publish if prompted).
+  + Deploy (create a new stage before you deploy).
     
-+ Find your Invoke URL
-  
-  + In the API’s Stages (likely $default), copy the Invoke URL.
-  + Your full endpoint will be: (https://<api-id>.execute-api.<region>.amazonaws.com/joke)
 ---
-Step 4️⃣ 
+Step 5️⃣ 
 Build the Frontend (single file).  Create a new file on your PC: `index.html` (any folder). Paste the complete html code and change the API GATEWAY URL.
 
 + (Optional) Host the frontend on Amazon S3 (Static Website)
@@ -173,7 +197,7 @@ Build the Frontend (single file).  Create a new file on your PC: `index.html` (a
   + Upload index.html to the bucket.
   + Bucket → Properties → scroll to Static website hosting:
   + Enable → Index document: `index.html` → Save.
-  + Copy the Bucket website endpoint (e.g., http://praise-random-joke-123.s3-website-us-east-1.amazonaws.com).
+  + Copy the Bucket website endpoint (e.g., http://bucket-name-123.s3-website-us-east-1.amazonaws.com).
   + Permissions → Bucket policy → Edit → paste (replace YOUR_BUCKET_NAME):
   ```json
   {
