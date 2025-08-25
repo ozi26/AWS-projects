@@ -31,23 +31,24 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 
 <img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
 ---
+
 🌟 Features
-+ Serverless architecture (no servers to manage).
-+ Beginner-friendly AWS integration.
-+ Fully documented workflow.
-+ Extendable to other APIs (facts, quotes, trivia).
+   + Serverless architecture (no servers to manage).
+   + Beginner-friendly AWS integration.
+   + Fully documented workflow.
+   + Extendable to other APIs (facts, quotes, trivia).
 ---
 🌟 AWS Services Used
- + AWS Lambda.
- + API Gateway
- + S3 ( optional: For Hosting ) 
+   + AWS Lambda.
+   + API Gateway
+   + S3 ( optional: For Hosting ) 
 ---
 🌟 Prerequisites (Windows)
-+ An AWS account (free tier is fine).
-+ A modern browser (Chrome/Edge/Firefox).
-+ (Optional but handy) Python 3 installed so you can run a tiny local web server:
-+ In PowerShell: python --version → if missing, download from python.org.
-+ (Optional) VS Code to edit files comfortably.
+   + An AWS account (free tier is fine).
+   + A modern browser (Chrome/Edge/Firefox).
+   + (Optional but handy) Python 3 installed so you can run a tiny local web server:
+   + In PowerShell: python --version → if missing, download from python.org.
+   + (Optional) VS Code to edit files comfortably.
 ---
 ⚡ How It Works
 1. A user clicks Get Joke on the frontend.
