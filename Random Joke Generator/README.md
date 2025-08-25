@@ -30,8 +30,8 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 ## 🏗️ Architecture
 
 <img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
----
 
+---
 🌟 Features
    + Serverless architecture (no servers to manage).
    + Beginner-friendly AWS integration.
