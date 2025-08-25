@@ -1,0 +1,14 @@
+<div>
+  Visitor Count: <span id="count">Loading...</span>
+</div>
+
+<script>
+  fetch("https://abc123xyz.execute-api.region.amazonaws.com/count")
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("count").innerText = data.visitor_count;
+    })
+    .catch(err => {
+      console.error("Error fetching count", err);
+    });
+</script>
