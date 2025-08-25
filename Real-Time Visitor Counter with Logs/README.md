@@ -185,7 +185,11 @@ Deploy:
     
 ---
 Step 5️⃣ 
-Build the Frontend (single file).  Create a new file on your PC: `index.html` (any folder). Paste the complete html code and change the API GATEWAY URL.
+Build the Frontend (single file).  Create a new file on your PC: `index.html` (any folder). 
++ Paste the complete html code and change the API GATEWAY URL.
+
+  > Example 1: https://abc123xyz.execute-api.region.amazonaws.com/count
+  > Example 2: https://abc123xyz.execute-api.region.amazonaws.com/logs
 
 + (Optional) Host the frontend on Amazon S3 (Static Website)
   
