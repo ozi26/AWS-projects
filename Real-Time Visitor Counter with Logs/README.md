@@ -1,4 +1,4 @@
-# :computer: Real-Time Visitor Counter(AWS Cloud Project)
+:computer: Real-Time Visitor Counter(AWS Cloud Project)
 
 A beginner-friendly AWS Cloud project that demonstrates how to integrate **API Gateway**, **Lambda**, and a **Frontend Website** to fetch and display random jokes from a public API.
 
