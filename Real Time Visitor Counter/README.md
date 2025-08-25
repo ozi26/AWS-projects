@@ -2,8 +2,6 @@
 
 A beginner-friendly AWS Cloud project that demonstrates how to integrate **API Gateway**, **Lambda**, and a **Frontend Website** to fetch and display random jokes from a public API.
 
----
-
 # Project Overview
 
 The **Random Joke Generator** is a simple full-stack cloud project that:
@@ -13,7 +11,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - Exposes the Lambda function via **Amazon API Gateway** (`GET /joke` endpoint).
 - Displays the joke on a **frontend web page** (HTML, CSS, JavaScript).
 - Teaches **CORS configuration**, **API Gateway integration**, and **Lambda proxying**.
----
+
 # Table of Contents
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -44,7 +42,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
    + An AWS account (free tier is fine).
    + A modern browser (Chrome/Edge/Firefox).
    + (Optional but handy) Python 3 installed so you can run a tiny local web server:
-   + In PowerShell: python --version → if missing, download from python.org.
+   + In PowerShell: `python --version` → if missing, download from python.org.
    + (Optional) VS Code to edit files comfortably.
 
 #  How It Works
@@ -58,24 +56,24 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 Step ❶ 
 + Create the IAM role for Lambda
   + Sign in to the AWS Management Console.
-  + Open IAM → Roles → Create role.
+  + Open `IAM` → `Roles` → Create role.
   + Trusted entity type: AWS service.
   + Use case: Choose Lambda → Next.
   +  Permissions: Search and attach AWSLambdaBasicExecutionRole
     (This lets Lambda write logs to CloudWatch).
-  + Role name: lambda-joke-role → Create role.
+  + Role name: `lambda-joke-role → Create role`.
 ---
 Step ❷ 
-+ Create the Lambda function (Node.js 20)
-  + Go to AWS Lambda → Create function.
++ Create the Lambda function (`Node.js 20`)
+  + Go to `AWS Lambda` → Create function.
   + Author from scratch:
   + Function name: random-joke-lambda
-  + Runtime: Node.js 20.x
-  + Architecture: x86_64 (default is fine)
+  + Runtime: `Node.js 20.x`
+  + Architecture: `x86_64` (default is fine)
   + Change default execution role: Use an existing role → select lambda-joke-role
   + Click Create function.
   + Add the code
-  + In the code editor (index.mjs or index.js area), replace the contents with your lambda code.
+  + In the code editor (`index.mjs` or `index.js` area), replace the contents with your lambda code.
 + Set environment variable (optional)
   + In the Lambda’s Configuration tab → Environment variables → Edit → Add:
   + Key: `JOKE_API_URL`
@@ -109,14 +107,14 @@ Step ❸
 ---
 Step ❹  Build the Frontend (single file).  Create a new file on your PC: `index.html` (any folder). Paste the complete html code and change the API GATEWAY URL.
 + (Optional) Host the frontend on Amazon S3 (Static Website)
-  + Go to S3 → Create bucket:
+  + Go to `S3` → Create bucket:
   + Bucket name: unique (e.g., praise-random-joke-123)
   + Region: same region as your API (recommended)
   + Uncheck “Block all public access” (for simple static hosting demo).
   + Acknowledge the warning → Create bucket.
   + Upload index.html to the bucket.
   + Bucket → Properties → scroll to Static website hosting:
-  + Enable → Index document: index.html → Save.
+  + Enable → Index document: `index.html` → Save.
   + Copy the Bucket website endpoint (e.g., http://praise-random-joke-123.s3-website-us-east-1.amazonaws.com).
   + Permissions → Bucket policy → Edit → paste (replace YOUR_BUCKET_NAME):
   ```json
