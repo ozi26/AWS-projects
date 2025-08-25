@@ -46,6 +46,13 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 + Fully documented workflow.
 + Extendable to other APIs (facts, quotes, trivia).
 ---
+🌟Prerequisites (Windows)
++ An AWS account (free tier is fine).
++ A modern browser (Chrome/Edge/Firefox).
++ (Optional but handy) Python 3 installed so you can run a tiny local web server:
++ In PowerShell: python --version → if missing, download from python.org.
++ (Optional) VS Code to edit files comfortably.
+---
 
 ## 🔧 AWS Setup Instructions
 Step ❶ 
@@ -126,6 +133,7 @@ Step ❹  Build the Frontend (single file).  Create a new file on your PC: `inde
       ]
     }
   ```
+> Because your API Gateway CORS is Allow-Origin: *, your S3-hosted page can call it without extra changes. In production, restrict CORS to your exact S3 website origin.
 ---
 🌟 Future Improvements
   + Add a loading spinner on click, disable the button while fetching.
