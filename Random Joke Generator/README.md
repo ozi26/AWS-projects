@@ -22,6 +22,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - [Features](#features)
 - [AWS Services Used](#aws-services-used)
 - [Prerequisites](#prerequisites)
+- [How It Works](#How-it-works).
 - [AWS Setup Instructions](#AWS-Setup-Instructions)
 - [Future Improvements](#future-improvements)
 
@@ -29,21 +30,17 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 ## 🏗️ Architecture
 
 <img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
-
----
-⚡ How It Works
-
-1. A user clicks Get Joke on the frontend.
-2. The frontend calls the API Gateway endpoint.
-3. API Gateway triggers the Lambda function.
-4. Lambda returns a random joke as JSON.
-5. The frontend displays the joke instantly.
 ---
 🌟 Features
 + Serverless architecture (no servers to manage).
 + Beginner-friendly AWS integration.
 + Fully documented workflow.
 + Extendable to other APIs (facts, quotes, trivia).
+---
+🌟 AWS Services Used
+ + AWS Lambda.
+ + API Gateway
+ + S3 ( optional: For Hosting ) 
 ---
 🌟 Prerequisites (Windows)
 + An AWS account (free tier is fine).
@@ -52,11 +49,14 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 + In PowerShell: python --version → if missing, download from python.org.
 + (Optional) VS Code to edit files comfortably.
 ---
-🌟 AWS Services Used
- + AWS Lambda.
- + API Gateway
- + S3 ( optional: For Hosting ) 
+⚡ How It Works
+1. A user clicks Get Joke on the frontend.
+2. The frontend calls the API Gateway endpoint.
+3. API Gateway triggers the Lambda function.
+4. Lambda returns a random joke as JSON.
+5. The frontend displays the joke instantly.
 ---
+
 ## 🔧 AWS Setup Instructions
 Step ❶ 
 + Create the IAM role for Lambda
