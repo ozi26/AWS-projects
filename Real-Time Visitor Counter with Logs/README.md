@@ -113,13 +113,13 @@ Step 2️⃣
 
   VisitorCounter Table
   
-   + Partition key: `id `(String)
+   + Partition key: `id`(String)
    + Item: `{ "id": "counter", "count": 0 }`
      
     VisitLogs Table
   
    + Partition key: `visit_id` (String, UUID)
-   + Attributes: `timestamp`, `ip`,` user_agent`
+   + Attributes: `timestamp`, `ip`,`user_agent`
 ---
 Step 3️⃣ 
 + Create two (2) Lambda functions (`python 3.12`)
