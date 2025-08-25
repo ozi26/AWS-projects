@@ -4,7 +4,7 @@ A beginner-friendly AWS Cloud project that demonstrates how to integrate **API G
 
 ---
 
-## 📌 Project Overview
+# Project Overview
 
 The **Random Joke Generator** is a simple full-stack cloud project that:
 
@@ -13,10 +13,8 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - Exposes the Lambda function via **Amazon API Gateway** (`GET /joke` endpoint).
 - Displays the joke on a **frontend web page** (HTML, CSS, JavaScript).
 - Teaches **CORS configuration**, **API Gateway integration**, and **Lambda proxying**.
-
 ---
-
-## 📝 Table of Contents
+# Table of Contents
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Features](#features)
@@ -26,39 +24,37 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - [AWS Setup Instructions](#aws-setup-instructions)
 - [Future Improvements](#future-improvements)
 
----
-## 🏗️ Architecture
+# Architecture
 
 <img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
 
 ---
-🌟 Features
+# Features
    + Serverless architecture (no servers to manage).
    + Beginner-friendly AWS integration.
    + Fully documented workflow.
    + Extendable to other APIs (facts, quotes, trivia).
----
-🌟 AWS Services Used
+
+# AWS Services Used
    + AWS Lambda.
    + API Gateway
    + S3 ( optional: For Hosting ) 
----
-🌟 Prerequisites (Windows)
+
+# Prerequisites (Windows)
    + An AWS account (free tier is fine).
    + A modern browser (Chrome/Edge/Firefox).
    + (Optional but handy) Python 3 installed so you can run a tiny local web server:
    + In PowerShell: python --version → if missing, download from python.org.
    + (Optional) VS Code to edit files comfortably.
----
-⚡ How It Works
+
+#  How It Works
 1. A user clicks Get Joke on the frontend.
 2. The frontend calls the API Gateway endpoint.
 3. API Gateway triggers the Lambda function.
 4. Lambda returns a random joke as JSON.
 5. The frontend displays the joke instantly.
----
 
-## 🔧 AWS Setup Instructions
+##  AWS Setup Instructions
 Step ❶ 
 + Create the IAM role for Lambda
   + Sign in to the AWS Management Console.
@@ -139,7 +135,7 @@ Step ❹  Build the Frontend (single file).  Create a new file on your PC: `inde
   ```
 > Because your API Gateway CORS is Allow-Origin: *, your S3-hosted page can call it without extra changes. In production, restrict CORS to your exact S3 website origin.
 ---
-🌟 Future Improvements
+# Future Improvements
   + Add a loading spinner on click, disable the button while fetching.
   + Restrict CORS allow-origin to your S3 website URL for better security.
   + Switch to your own API key–based provider and store the key as a Lambda environment variable (never in frontend).
