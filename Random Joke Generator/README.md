@@ -30,16 +30,36 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 ---
 ## 🏗️ Architecture
 
-(Optional diagram or description of the cloud architecture)
+<img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
 
 ---
+⚡ How It Works
 
-## ✅ STEPS TO BUILD USING AWS CONSOLE.
+1. A user clicks Get Joke on the frontend.
 
+2. The frontend calls the API Gateway endpoint.
 
-Step 1 — 
-Create the IAM role for Lambda
-Sign in to the AWS Management Console.
+3. API Gateway triggers the Lambda function.
+
+4. Lambda returns a random joke as JSON.
+
+5. The frontend displays the joke instantly.
+---
+🌟 Features
+
++ Serverless architecture (no servers to manage).
+
++ Beginner-friendly AWS integration.
+
++ Fully documented workflow.
+
++ Extendable to other APIs (facts, quotes, trivia).
+
+## 🔧 AWS Setup Instructions
+
+Step 1️⃣  
++ Create the IAM role for Lambda
+  Sign in to the AWS Management Console.
 Open IAM → Roles → Create role.
 Trusted entity type: AWS service.
 Use case: Choose Lambda → Next.
@@ -58,3 +78,7 @@ Change default execution role: Use an existing role → select lambda-joke-role
 Click Create function.
 Add the code
 In the code editor (index.mjs or index.js area), replace the contents with:
+
+
+
+
