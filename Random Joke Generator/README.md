@@ -22,8 +22,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - [Features](#features)
 - [AWS Services Used](#aws-services-used)
 - [Prerequisites](#prerequisites)
-- [Deployment Steps](#deployment-steps)
-- [Usage](#usage)
+- [AWS Setup Instructions](#AWS-Setup-Instructions)
 - [Future Improvements](#future-improvements)
 
 ---
@@ -46,14 +45,18 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 + Fully documented workflow.
 + Extendable to other APIs (facts, quotes, trivia).
 ---
-🌟Prerequisites (Windows)
+🌟 Prerequisites (Windows)
 + An AWS account (free tier is fine).
 + A modern browser (Chrome/Edge/Firefox).
 + (Optional but handy) Python 3 installed so you can run a tiny local web server:
 + In PowerShell: python --version → if missing, download from python.org.
 + (Optional) VS Code to edit files comfortably.
 ---
-
+🌟 AWS Services Used
+ + AWS Lambda.
+ + API Gateway
+ + S3 ( optional: For Hosting ) 
+---
 ## 🔧 AWS Setup Instructions
 Step ❶ 
 + Create the IAM role for Lambda
