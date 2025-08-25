@@ -2,8 +2,6 @@
 
 A beginner-friendly AWS Cloud project that demonstrates how to integrate **API Gateway**, **Lambda**, and a **Frontend Website** to fetch and display random jokes from a public API.
 
----
-
 # Project Overview
 
 The **Random Joke Generator** is a simple full-stack cloud project that:
@@ -13,7 +11,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - Exposes the Lambda function via **Amazon API Gateway** (`GET /joke` endpoint).
 - Displays the joke on a **frontend web page** (HTML, CSS, JavaScript).
 - Teaches **CORS configuration**, **API Gateway integration**, and **Lambda proxying**.
----
+
 # Table of Contents
 - [Overview](#overview)
 - [Architecture](#architecture)
