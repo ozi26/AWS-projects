@@ -4,7 +4,7 @@ A beginner-friendly AWS Cloud project that demonstrates how to integrate **API G
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
 The **Random Joke Generator** is a simple full-stack cloud project that:
 
@@ -16,7 +16,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 
 ---
 
-## 📝 Table of Contents
+# 📝 Table of Contents
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Features](#features)
@@ -27,7 +27,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 - [Future Improvements](#future-improvements)
 
 ---
-## 🏗️ Architecture
+# 🏗️ Architecture
 
 <img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
 
