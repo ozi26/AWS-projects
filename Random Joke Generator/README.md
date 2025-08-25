@@ -37,7 +37,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
    + Beginner-friendly AWS integration.
    + Fully documented workflow.
    + Extendable to other APIs (facts, quotes, trivia).
----
+
 # AWS Services Used
    + AWS Lambda.
    + API Gateway
