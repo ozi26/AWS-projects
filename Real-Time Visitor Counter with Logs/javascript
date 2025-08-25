@@ -1,0 +1,15 @@
+const apiBase = "YOUR_API_GATEWAY_URL";
+
+async function getCount() {
+  let res = await fetch(`${apiBase}/count`);
+  let data = await res.json();
+  document.getElementById("count").textContent = data.visitor_count;
+}
+
+async function getLogs() {
+  let res = await fetch(`${apiBase}/logs`);
+  let logs = await res.json();
+  document.getElementById("logs").textContent = JSON.stringify(logs, null, 2);
+}
+
+getCount();
