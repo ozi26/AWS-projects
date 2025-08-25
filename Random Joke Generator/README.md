@@ -32,7 +32,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 <img width="1536" height="1024" alt="Architectural Diagram" src="https://github.com/user-attachments/assets/a93b6efb-0026-4f13-a7d8-51e62bc3c8f8" />
 
 ---
-🌟 Features
+# Features
    + Serverless architecture (no servers to manage).
    + Beginner-friendly AWS integration.
    + Fully documented workflow.
@@ -50,7 +50,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
    + In PowerShell: python --version → if missing, download from python.org.
    + (Optional) VS Code to edit files comfortably.
 ---
-⚡ How It Works
+# ⚡ How It Works
 1. A user clicks Get Joke on the frontend.
 2. The frontend calls the API Gateway endpoint.
 3. API Gateway triggers the Lambda function.
