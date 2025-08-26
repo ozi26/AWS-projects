@@ -170,11 +170,10 @@ Step 4️⃣
 
     > CORS: For this project, CORS must be enabled on API Gateway (we did). S3 doesn’t need special CORS for serving a single page.
 
-#  Author
-
-Praise Ossai-Chidi
-
-AWS Certified | Cloud & DevOps Enthusiast 
+---
++ DEMO VIDEO OF THE PROJECT:
+  
+   > `https://drive.google.com/file/d/1wkN2JdQXsdl1RTkeC36GzqnohkfHa7K0/view?usp=sharing`
 
 
 
