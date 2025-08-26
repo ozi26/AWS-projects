@@ -64,7 +64,7 @@ This project integrates **AWS services** with **external REST APIs**, demonstrat
      
    > Note: Windows Operating System
 
-   + External APIs**
+   + External APIs
      
       > Example: [OpenWeather](https://openweathermap.org/api)
 
@@ -127,10 +127,7 @@ Step 3️⃣
 + CORS:
   
    + In CORS settings, Enable CORS.
-   + Allow origins: `*`
-     
-   > (for dev; later restrict to your website origin).
-      
+   + Allow origins: `*` Note: (for dev; later restrict to your website origin). 
    + Allow methods: `GET`
    + Allow headers: `Content-Type`
 
