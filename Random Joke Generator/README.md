@@ -38,15 +38,16 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
    + API Gateway
    + S3 ( optional: For Hosting ) 
 
-# Prerequisites (Windows)
+# Prerequisites
    + An AWS account (free tier is fine).
    + A modern browser (Chrome/Edge/Firefox).
    + (Optional but handy) Python 3 installed so you can run a tiny local web server:
    + In PowerShell: `python --version` → if missing, download from python.org.
    + (Optional) VS Code to edit files comfortably.
+> Windows Operating system.
 
 #  How It Works
-1. A user clicks Get Joke on the frontend.
+1. A user clicks "Get Joke" on the frontend.
 2. The frontend calls the API Gateway endpoint.
 3. API Gateway triggers the Lambda function.
 4. Lambda returns a random joke as JSON.
