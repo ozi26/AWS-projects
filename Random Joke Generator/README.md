@@ -52,7 +52,7 @@ The **Random Joke Generator** is a simple full-stack cloud project that:
 4. Lambda returns a random joke as JSON.
 5. The frontend displays the joke instantly.
 
-##  AWS Setup Instructions
+#  AWS Setup Instructions
 Step ❶ 
 + Create the IAM role for Lambda
   + Sign in to the AWS Management Console.
