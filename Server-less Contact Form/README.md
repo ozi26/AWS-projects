@@ -237,7 +237,6 @@ Step 7️⃣
   
    + Go to your website bucket → Objects → Upload → add `index.html` → Upload.
   
----
 # Future Improvements
 
    + ✅ Add email notifications via SES when a message is submitted
