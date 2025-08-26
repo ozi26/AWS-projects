@@ -139,6 +139,6 @@ Step ❹  Build the Frontend (single file).  Create a new file on your PC: `inde
   + Restrict CORS allow-origin to your S3 website URL for better security.
   + Switch to your own API key–based provider and store the key as a Lambda environment variable (never in frontend).
  
-
+> VIDEO DEMO OF THE PROJECT: `https://drive.google.com/file/d/1wTuTLf6nUXsOubFjaFN4a4bBv6gYc8ZN/view?usp=drive_link`
 
 
