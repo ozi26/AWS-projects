@@ -26,7 +26,8 @@ All powered by a **pay-per-use, fully managed** AWS architecture.
 
 # Architecture
 
-<img width="1615" height="964" alt="architecture" src="https://github.com/user-attachments/assets/677f4c92-314f-4194-bcd9-72ec02199839" />
+<img width="1536" height="1024" alt="serverless contact form" src="https://github.com/user-attachments/assets/7bb71e4d-50b3-454c-8a6d-95020fd1fd9b" />
+
 
 ---
 # Features
