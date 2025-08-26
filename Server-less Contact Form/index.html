@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Serverless Contact Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #141a2e;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --text: #e6e9f2;
+      --muted: #9aa3b2;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 10% 10%, #111834 0%, #0b1020 60%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 860px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02)) , var(--card);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      backdrop-filter: blur(4px);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing: 0.3px;
+    }
+    p.sub {
+      margin: 0 0 24px;
+      color: var(--muted);
+    }
+    form {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+    }
+    .full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      font-size: 14px;
+      margin: 0 0 6px;
+      color: var(--muted);
+    }
+    input, textarea, button, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+    }
+    input::file-selector-button {
+      margin-right: 12px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent-2);
+      color: #0b1020;
+      cursor: pointer;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    .row {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+    }
+    .actions {
+      display: flex; gap: 12px; align-items: center;
+    }
+    button.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #0b1020;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .08s ease;
+    }
+    button.primary:active { transform: translateY(1px); }
+
+    .note { color: var(--muted); font-size: 13px; }
+    .error { color: var(--danger); font-size: 14px; }
+    .success {
+      background: rgba(110,231,183,0.12);
+      border: 1px solid rgba(110,231,183,0.35);
+      color: #bfffe1;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+    progress {
+      width: 100%; height: 10px;
+    }
+    @media (max-width: 720px) {
+      form, .row { grid-template-columns: 1fr; }
+    }
+    .footer {
+      margin-top: 14px; font-size: 12px; color: var(--muted);
+    }
+    code { color: #b7d4ff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Contact us</h1>
+    <p class="sub">Send a message and (optionally) include an image. We’ll confirm when it’s saved.</p>
+
+    <form id="contactForm">
+      <div>
+        <label for="name">Full name *</label>
+        <input id="name" name="name" placeholder="Ada Lovelace" required />
+      </div>
+      <div>
+        <label for="email">Email *</label>
+        <input id="email" name="email" type="email" placeholder="ada@example.com" required />
+      </div>
+      <div>
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" placeholder="+234 812 345 6789" />
+      </div>
+      <div>
+        <label for="subject">Subject</label>
+        <input id="subject" name="subject" placeholder="Hello" />
+      </div>
+      <div class="full">
+        <label for="message">Message *</label>
+        <textarea id="message" name="message" placeholder="Write your message..." required></textarea>
+      </div>
+      <div class="full">
+        <label for="image">Attach image (PNG/JPG ≤ 5 MB)</label>
+        <input id="image" name="image" type="file" accept="image/png,image/jpeg" />
+        <div class="note">If you select a file, we’ll upload it securely to S3 first.</div>
+      </div>
+
+      <div class="full actions">
+        <button class="primary" type="submit">Send message</button>
+        <div id="status" class="note"></div>
+      </div>
+      <div class="full">
+        <progress id="progress" value="0" max="100" style="display:none;"></progress>
+      </div>
+      <div class="full">
+        <div id="result"></div>
+        <div id="error" class="error"></div>
+      </div>
+    </form>
+
+    <div class="footer">
+      Backend: <code>API Gateway (HTTP API)</code> → <code>Lambda (Python)</code> → <code>DynamoDB</code>, image via <code>pre-signed S3 URL</code>.
+    </div>
+  </div>
+
+  <script>
+    // ====== Configure this (your API HTTP invoke URL) ======
+    const API_BASE_URL = "https://YOUR-ID.execute-api.us-east-1.amazonaws.com";
+    // =======================================================
+
+    const form = document.getElementById("contactForm");
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const errorEl = document.getElementById("error");
+    const progressEl = document.getElementById("progress");
+
+    function uid() {
+      // Simple unique-ish id for filenames
+      return "id" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    async function presign(filename, contentType) {
+      const res = await fetch(`${API_BASE_URL}/presign`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ filename, contentType })
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`Presign failed: ${t}`);
+      }
+      return res.json();
+    }
+
+    function uploadWithPut(url, file) {
+      // Use XHR so we can track progress
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", url);
+        xhr.setRequestHeader("Content-Type", file.type);
+        xhr.upload.onprogress = (evt) => {
+          if (evt.lengthComputable) {
+            const pct = Math.round((evt.loaded / evt.total) * 100);
+            progressEl.style.display = "block";
+            progressEl.value = pct;
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve();
+          else reject(new Error(`Upload error: ${xhr.status} ${xhr.responseText}`));
+        };
+        xhr.onerror = () => reject(new Error("Network error during upload"));
+        xhr.send(file);
+      });
+    }
+
+    async function submitForm(payload) {
+      const res = await fetch(`${API_BASE_URL}/submit`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`Submit failed: ${t}`);
+      }
+      return res.json();
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      resultEl.innerHTML = "";
+      errorEl.textContent = "";
+      statusEl.textContent = "Validating…";
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const message = document.getElementById("message").value.trim();
+      const fileInput = document.getElementById("image");
+      const file = fileInput.files && fileInput.files[0];
+
+      if (!name || !email || !message) {
+        errorEl.textContent = "Please fill in name, email, and message.";
+        return;
+      }
+      if (file && file.size > 5 * 1024 * 1024) {
+        errorEl.textContent = "Image must be 5 MB or less.";
+        return;
+      }
+
+      try {
+        let imageKey = null;
+
+        if (file) {
+          statusEl.textContent = "Requesting upload URL…";
+          const safeName = file.name.replace(/[^\w.\-]/g, "_");
+          const { uploadUrl, key } = await presign(`${uid()}_${safeName}`, file.type);
+
+          statusEl.textContent = "Uploading image…";
+          await uploadWithPut(uploadUrl, file);
+          imageKey = key;
+          statusEl.textContent = "Upload complete.";
+        }
+
+        statusEl.textContent = "Sending form…";
+        const payload = { name, email, phone, subject, message, imageKey };
+        const data = await submitForm(payload);
+
+        progressEl.style.display = "none";
+        statusEl.textContent = "";
+        form.reset();
+        resultEl.innerHTML = `<div class="success">✅ ${data.message}<br/>Submission ID: <code>${data.submissionId}</code></div>`;
+      } catch (err) {
+        progressEl.style.display = "none";
+        statusEl.textContent = "";
+        errorEl.textContent = err.message || String(err);
+      }
+    });
+  </script>
+</body>
+</html>
