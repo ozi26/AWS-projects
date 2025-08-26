@@ -218,7 +218,7 @@ Build the Frontend (single file).  Create a new file on your PC: `index.html` (a
     }
   ```
 > Because your API Gateway CORS is Allow-Origin: *, your S3-hosted page can call it without extra changes. In production, restrict CORS to your exact S3 website origin.
----
+
 # Future Improvements
    + 🔐 Add authentication for logs endpoint
      
