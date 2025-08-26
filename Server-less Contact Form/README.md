@@ -67,6 +67,7 @@ All powered by a **pay-per-use, fully managed** AWS architecture.
 > Note: Windows Operating System
 
 #  AWS Setup Instructions
+
 Step 1️⃣
 + Create the S3 bucket for website hosting (frontend)
    + S3 → Create bucket.
@@ -104,7 +105,7 @@ Step 1️⃣
 
 > You’ll upload index.html here later.
 
-Step 1️⃣
+Step 2️⃣
 + Create the S3 bucket for uploads (images)
    + Bucket name: `my-contact-form-uploads-<random>` (must be globally unique).
    + Region: your chosen region.
@@ -130,7 +131,7 @@ Step 1️⃣
   ```
 > For production, replace "*" in AllowedOrigins with your website origin (e.g., http://YOUR-WEBSITE-BUCKET.s3-website-<region>.amazonaws.com).
 
-Step 1️⃣ 
+Step 3️⃣ 
 + Create the IAM role for Lambda
   + `IAM` → `Roles` → Create role.
   + Trusted entity type: AWS service.
@@ -162,14 +163,14 @@ Step 1️⃣
   ```
    + Review policy, name it. e.g `ServerlessContactFormAccess`, and Create.
 ---
-Step 2️⃣ 
+Step 4️⃣ 
 + Setup DynamoDB Tables
    + DynamoDB → Tables → Create table.
    + Table name: `ContactMessages`
    + Partition key: `id` (String)
    + Leave other settings default → Create table.
 ---
-Step 3️⃣ 
+Step 5️⃣ 
 + Create Lambda function (`python 3.12`)
   
   + Go to `AWS Lambda` → Create function.
@@ -196,7 +197,7 @@ Step 3️⃣
   + Timeout: set to `10` seconds → Save.
   
 ---
-Step 4️⃣
+Step 6️⃣
 + Create the API Gateway HTTP API.
    + Choose HTTP API → Click Build.
    + Configure:
@@ -224,7 +225,7 @@ Step 4️⃣
 > Note the Invoke URL, e.g. https://abc123.execute-api.us-east-1.amazonaws.com.
     
 ---
-Step 5️⃣ 
+Step 7️⃣ 
 
 + Frontend (HTML/CSS/JS).  Create a new file on your PC: `index.html` (any folder). 
       
