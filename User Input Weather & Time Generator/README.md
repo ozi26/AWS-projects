@@ -127,23 +127,25 @@ Step 3️⃣
 + CORS:
   
    + In CORS settings, Enable CORS.
-   + Allow origins: `*` 
+   + Allow origins: `*`
+     
    > (for dev; later restrict to your website origin).
+      
    + Allow methods: `GET`
    + Allow headers: `Content-Type`
 
-> Deployments: Ensure Auto-deploy is enabled (HTTP APIs usually auto-deploy).
+   > Deployments: Ensure Auto-deploy is enabled (HTTP APIs usually auto-deploy).
 
-> Note the Invoke URL, e.g. https://abc123.execute-api.us-east-1.amazonaws.com.
+   > Note the Invoke URL, e.g. https://abc123.execute-api.us-east-1.amazonaws.com.
     
 ---
 Step 4️⃣  
 
 + Frontend (HTML/CSS/JS).  Create a new file on your PC: `index.html` (any folder). 
       
-> Update the `API_BASE_URL` value to your `API invoke URL`.
+   > Update the `API_BASE_URL` value to your `API invoke URL`.
 
-> No external libraries needed; it’s pure HTML/CSS/JS.
+   > No external libraries needed; it’s pure HTML/CSS/JS.
 
 + Host your frontend (optional)
    + S3 → Create bucket
@@ -168,11 +170,12 @@ Step 4️⃣
 
 + Visit the Static website endpoint shown in the bucket’s Properties.
 
-> CORS: For this project, CORS must be enabled on API Gateway (we did). S3 doesn’t need special CORS for serving a single page.
+    > CORS: For this project, CORS must be enabled on API Gateway (we did). S3 doesn’t need special CORS for serving a single page.
 
 #  Author
 
 Praise Ossai-Chidi
+
 AWS Certified | Cloud & DevOps Enthusiast 
 
 
