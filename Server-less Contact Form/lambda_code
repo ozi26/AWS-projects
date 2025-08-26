@@ -1,0 +1,110 @@
+import os
+import json
+import boto3
+import uuid
+from datetime import datetime, timezone
+from urllib.parse import urlparse
+
+s3 = boto3.client("s3")
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(os.environ["TABLE_NAME"])
+
+UPLOAD_BUCKET = os.environ["UPLOAD_BUCKET"]
+ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "*")
+
+def _cors_headers():
+    return {
+        "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "OPTIONS,POST",
+        "Access-Control-Allow-Credentials": "true"
+    }
+
+def _ok(body, status=200):
+    return {"statusCode": status, "headers": _cors_headers(), "body": json.dumps(body)}
+
+def _error(msg, status=400):
+    return _ok({"error": msg}, status)
+
+def handle_presign(event):
+    try:
+        body = json.loads(event.get("body") or "{}")
+        filename = body.get("filename")
+        content_type = body.get("contentType")
+
+        if not filename or not content_type:
+            return _error("filename and contentType are required", 422)
+
+        # Generate a unique key to avoid collisions, keep original name suffix
+        ext = ""
+        if "." in filename:
+            ext = filename.split(".")[-1].lower()
+        key = f"uploads/{uuid.uuid4().hex}_{filename}"
+
+        # Generate a pre-signed PUT URL (valid for 5 minutes)
+        presigned_url = s3.generate_presigned_url(
+            ClientMethod="put_object",
+            Params={
+                "Bucket": UPLOAD_BUCKET,
+                "Key": key,
+                "ContentType": content_type
+            },
+            ExpiresIn=300
+        )
+
+        return _ok({
+            "uploadUrl": presigned_url,
+            "key": key
+        })
+    except Exception as e:
+        return _error(f"presign failed: {str(e)}", 500)
+
+def handle_submit(event):
+    try:
+        body = json.loads(event.get("body") or "{}")
+        required = ["name", "email", "message", "imageKey"]
+        missing = [f for f in required if not body.get(f)]
+        if missing:
+            return _error(f"Missing fields: {', '.join(missing)}", 422)
+
+        item_id = str(uuid.uuid4())
+        now_iso = datetime.now(timezone.utc).isoformat()
+
+        item = {
+            "id": item_id,
+            "name": body["name"].strip(),
+            "email": body["email"].strip().lower(),
+            "phone": (body.get("phone") or "").strip(),
+            "subject": (body.get("subject") or "").strip(),
+            "message": body["message"].strip(),
+            "image_key": body["imageKey"],
+            "submitted_at": now_iso,
+            "user_agent": (event.get("headers", {}) or {}).get("user-agent", "")
+        }
+
+        table.put_item(Item=item)
+
+        return _ok({
+            "message": "Submission saved. Thank you!",
+            "submissionId": item_id
+        }, status=201)
+
+    except Exception as e:
+        return _error(f"submit failed: {str(e)}", 500)
+
+def lambda_handler(event, context):
+    # HTTP API (v2) event
+    route = (event.get("rawPath") or "").lower()
+    method = (event.get("requestContext", {}).get("http", {}).get("method") or "").upper()
+
+    # Preflight (in case API CORS is disabled)
+    if method == "OPTIONS":
+        return _ok({"ok": True}, status=200)
+
+    if route.endswith("/presign") and method == "POST":
+        return handle_presign(event)
+    if route.endswith("/submit") and method == "POST":
+        return handle_submit(event)
+
+    return _error("Not Found", 404)
+
