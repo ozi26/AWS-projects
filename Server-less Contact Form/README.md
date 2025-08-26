@@ -235,15 +235,16 @@ Step 7️⃣
 
 + Upload the frontend
   
-   + Go to your website bucket → Objects → Upload → add index.html → Upload.
+   + Go to your website bucket → Objects → Upload → add `index.html` → Upload.
   
 ---
 # Future Improvements
 
-   + Email notifications via Amazon SES or SNS when a new message arrives.
-   + CloudFront in front of your website bucket to get HTTPS and better performance.
-   + Validation: add stricter checks (email regex, file type whitelist).
-   + TTL (DynamoDB Time To Live) if you want records to expire automatically.
+   + ✅ Add email notifications via SES when a message is submitted
+   + ✅ Use CloudFront for HTTPS + caching
+   + ✅ Add input validation and file type restrictions
+   + ✅ Implement CI/CD pipeline (CodePipeline + CodeBuild)
+   + ✅ Store uploaded images with lifecycle policies for cost savings
 
 
 
