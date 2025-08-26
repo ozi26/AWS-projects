@@ -113,6 +113,7 @@ Step 3️⃣
 + Create the API Gateway HTTP API.
    + Choose HTTP API → Click Build.
    + Configure:
+     
       + Name: `weather-timeAPI`
      
 + Add an integration
@@ -131,9 +132,9 @@ Step 3️⃣
    + Allow methods: `GET`
    + Allow headers: `Content-Type`
 
-   > Deployments: Ensure Auto-deploy is enabled (HTTP APIs usually auto-deploy).
+      > Deployments: Ensure Auto-deploy is enabled (HTTP APIs usually auto-deploy).
 
-   > Note the Invoke URL, e.g. https://abc123.execute-api.us-east-1.amazonaws.com.
+      > Note the Invoke URL, e.g. https://abc123.execute-api.us-east-1.amazonaws.com.
     
 ---
 Step 4️⃣  
