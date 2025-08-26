@@ -1,1 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather & Time Dashboard</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: #0f172a; color: #e2e8f0; }
+    header { padding: 24px; text-align: center; background: #111827; border-bottom: 1px solid #1f2937; }
+    main { max-width: 860px; margin: 32px auto; padding: 0 16px; }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    form { display: grid; gap: 12px; grid-template-columns: 1fr 160px 120px; align-items: end; }
+    label { display: block; font-size: 14px; color: #9ca3af; margin-bottom: 6px; }
+    input, button, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #374151; background: #0b1220; color: #e5e7eb; }
+    input::placeholder { color: #6b7280; }
+    button { cursor: pointer; font-weight: 600; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .results { margin-top: 20px; display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+    .muted { color: #9ca3af; font-size: 14px; }
+    .row { display: flex; align-items: center; gap: 12px; }
+    .big { font-size: 40px; font-weight: 700; }
+    .icon { width: 64px; height: 64px; }
+    .error { background: #3f1d1d; color: #fecaca; border: 1px solid #7f1d1d; padding: 12px; border-radius: 10px; }
+    footer { margin: 40px 0; text-align: center; color: #94a3b8; font-size: 13px;}
+    @media (max-width: 720px) { form { grid-template-columns: 1fr; } .results { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌤️ Weather & 🕒 Time Dashboard</h1>
+    <p class="muted">Type a city (and optional 2-letter country code, e.g., NG, US)</p>
+  </header>
+  <main>
+    <div class="card">
+      <form id="form">
+        <div>
+          <label for="city">City</label>
+          <input id="city" name="city" placeholder="e.g., Lagos" required />
+        </div>
+        <div>
+          <label for="country">Country code (optional)</label>
+          <input id="country" name="country" placeholder="e.g., NG" maxlength="2" />
+        </div>
+        <div>
+          <button id="submitBtn" type="submit">Get Weather & Time</button>
+        </div>
+      </form>
+
+      <div id="status" class="muted" style="margin-top: 10px;"></div>
+      <div id="error" class="error" style="display:none;margin-top:10px;"></div>
+
+      <div id="results" class="results" style="display:none;">
+        <div>
+          <h2>Weather</h2>
+          <div class="row">
+            <img id="wicon" class="icon" alt="icon" />
+            <div>
+              <div class="big" id="temp"></div>
+              <div id="desc" class="muted"></div>
+            </div>
+          </div>
+          <div class="muted" style="margin-top:8px;">
+            Feels like: <span id="feels"></span> • Humidity: <span id="humidity"></span>%
+          </div>
+        </div>
+        <div>
+          <h2>Local Time</h2>
+          <div class="big" id="time"></div>
+          <div class="muted" id="zone"></div>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <h3>Location</h3>
+          <div class="muted"><span id="loc"></span></div>
+        </div>
+      </div>
+    </div>
+    <footer>Powered by OpenWeather & TimeZoneDB • Served by AWS API Gateway + Lambda</footer>
+  </main>
+
+  <script>
+    const API_BASE = "https://1q064q6fpc.execute-api.us-east-1.amazonaws.com"; // e.g., https://abc123.execute-api.us-east-1.amazonaws.com
+
+    const form = document.getElementById('form');
+    const statusEl = document.getElementById('status');
+    const errorEl = document.getElementById('error');
+    const resultsEl = document.getElementById('results');
+
+    const wicon = document.getElementById('wicon');
+    const temp = document.getElementById('temp');
+    const desc = document.getElementById('desc');
+    const feels = document.getElementById('feels');
+    const humidity = document.getElementById('humidity');
+    const timeEl = document.getElementById('time');
+    const zoneEl = document.getElementById('zone');
+    const locEl = document.getElementById('loc');
+    const btn = document.getElementById('submitBtn');
+
+    function setLoading(isLoading, msg="") {
+      btn.disabled = isLoading;
+      statusEl.textContent = isLoading ? (msg || "Loading...") : "";
+    }
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.style.display = 'block';
+      resultsEl.style.display = 'none';
+    }
+
+    function hideError() {
+      errorEl.textContent = "";
+      errorEl.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const city = document.getElementById('city').value.trim();
+      const country = document.getElementById('country').value.trim().toUpperCase();
+
+      if (!city) { showError("Please enter a city."); return; }
+
+      setLoading(true, "Fetching weather and time...");
+      try {
+        const params = new URLSearchParams({ city });
+        if (country) params.set('country', country);
+
+        const res = await fetch(`${API_BASE}/weather-time?${params.toString()}`);
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Server error (${res.status}): ${text}`);
+        }
+        const data = await res.json();
+
+        // Render
+        const icon = data?.weather?.icon;
+        wicon.src = icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : "";
+        wicon.style.display = icon ? "block" : "none";
+
+        temp.textContent = (data?.weather?.temperature_c != null)
+          ? `${Math.round(data.weather.temperature_c)}°C` : "N/A";
+        desc.textContent = data?.weather?.description || "";
+        feels.textContent = (data?.weather?.feels_like_c != null)
+          ? `${Math.round(data.weather.feels_like_c)}°C` : "N/A";
+        humidity.textContent = data?.weather?.humidity_pct ?? "N/A";
+
+        timeEl.textContent = data?.time?.local_time || "N/A";
+        zoneEl.textContent = data?.time?.zone_name
+          ? `Time zone: ${data.time.zone_name} (UTC offset ${data.time.gmt_offset_seconds >= 0 ? "+" : ""}${Math.floor(data.time.gmt_offset_seconds/3600)}h)`
+          : "";
+
+        const locCity = data?.location?.city || city;
+        const ccode = data?.location?.countryCode || country || "";
+        const lat = data?.location?.lat;
+        const lon = data?.location?.lon;
+        locEl.textContent = `${locCity}${ccode ? ", " + ccode : ""} • lat ${lat}, lon ${lon}`;
+
+        resultsEl.style.display = 'grid';
+      } catch (err) {
+        showError(err.message || String(err));
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
 
