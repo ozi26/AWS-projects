@@ -228,6 +228,7 @@ Build the Frontend (single file).  Create a new file on your PC: `index.html` (a
      
    + ⏳  Add retention policy to old logs
 ---
-+ VIDEO DEMO OF THE PROJECT:
++ DEMO VIDEO OF THE PROJECT:
+  
    > `https://drive.google.com/file/d/1PtcuTfRy20QCA4ILL1q3X6AERBINNeFC/view?usp=sharing`
 
