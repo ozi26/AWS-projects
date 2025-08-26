@@ -1,143 +1,195 @@
-# :computer: Real-Time Visitor Counter With Logs (AWS Cloud Project)
+# :mailbox: Serverless Contact Form
 
-This project demonstrates how to build a scalable, serverless visitor counter with timestamped visit logs, IP address, and user agent details, powered entirely by AWS services.
+A modern **serverless contact form** built on **AWS Cloud**, allowing users to submit a message, upload an image, and get confirmation — **without managing servers**.  
+
 
 #  Overview
+This application lets users:
 
-The Real-Time Visitor Counter with Logs project is a cloud-native, serverless web application that tracks and logs website visitors in real time. It demonstrates how modern cloud services can be combined to build scalable, cost-efficient, and production-ready applications without managing traditional servers.
+   - Fill out a **contact form** (Name, Email, Phone, Subject, Message)
+  
+   - **Upload an image** (stored securely in Amazon S3)
+  
+   - Submit details to **API Gateway → Lambda → DynamoDB**
+  
+   - Get an instant **confirmation** when their message is saved
 
-At its core, this application performs two main functions:
-   + Counts website visits in real time – every new visit automatically updates the counter.
-   + Logs visit details – including timestamp, IP address, and user agent for each request.
-
-These logs can be retrieved through a dedicated API endpoint, making it easy to analyze traffic history.
-# Purpose & Problem Solved
-In many scenarios—such as personal blogs, portfolio sites, marketing campaigns, or internal dashboards—there is a need to track user activity without relying on heavy external analytics platforms (like Google Analytics).
-
-This project provides:
-
-✅ A lightweight alternative to complex analytics solutions
-
-✅ Full transparency & control over collected data (stored securely in DynamoDB)
-
-✅ A serverless, pay-as-you-go model, making it cost-effective for individuals and startups
-
-✅ A foundation for custom analytics dashboards and visitor insights
+All powered by a **pay-per-use, fully managed** AWS architecture.
 # Table of Contents
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Features](#features)
 - [AWS Services Used](#aws-services-used)
 - [Prerequisites](#prerequisites)
-- [Architecture Highlights](#architecture-highlights)
 - [AWS Setup Instructions](#aws-setup-instructions)
 - [Future Improvements](#future-improvements)
 
 # Architecture
 
-
 <img width="1615" height="964" alt="architecture" src="https://github.com/user-attachments/assets/677f4c92-314f-4194-bcd9-72ec02199839" />
-
 
 ---
 # Features
-+ 🔢 Real-Time Visitor Counter – Increments every time someone visits.
-  
-+ 🕒 Visit Logs with Timestamps – Stores each visit with date/time in DynamoDB.
-  
-+ 🌐 Visitor Info Capture – Stores IP address & user agent.
-  
-+ 📊 API Endpoints –
-  
-   + `/count` → Returns updated visitor count.
-   + `/logs` → Returns all past visit logs.
-+ ☁️ Serverless Architecture – Scales automatically with zero server management.
-  
-+ 🔒 Secure & Cost-Efficient – Pay only for what you use.
++ 🌐 Static website frontend hosted on S3
+
++ ⚡ Serverless backend with API Gateway + Lambda (Python)
+
++ 💾 Form data stored in DynamoDB
+
++ 🖼️ Images uploaded securely via S3 pre-signed URLs
+
++ 🔒 Built-in CORS & IAM permissions
+
++ 📊 Scalable, cost-efficient, and production-ready
 
 # AWS Services Used
-   + Amazon DynamoDB → NoSQL database to store counts and logs.
-     
-   + AWS Lambda → Backend logic to process requests.
-     
-   + Amazon API Gateway → Secure REST API endpoints.
-     
-   + Amazon CloudWatch → Logs and monitoring.
-     
-   + (Optional) Amazon S3 + CloudFront → Host frontend webpage.  
+   + Backend: AWS Lambda (Python 3.12)
+
+   + API Gateway: HTTP API for serverless endpoints
+
+   + Storage: Amazon S3 (Uploads + Static Website Hosting)
+
+   + Database: Amazon DynamoDB
+
+   + Logs/Monitoring: CloudWatch Logs
+
+   + IAM: Fine-grained permissions
+
+   + Frontend: HTML, CSS, JavaScript (Fetch API)
 
 # Prerequisites
    + An AWS account (free tier is fine).
      
    + A modern browser (Chrome/Edge/Firefox).
      
-   + (Optional but handy) Python 3 installed so you can run a tiny local web server:
-     
-      + In PowerShell: `python --version` → if missing, download from python.org.
-        
    + (Optional) VS Code to edit files comfortably.
      
-     > Note: Windows Operating System
-
-#  Architecture Highlights
-
-The project leverages multiple AWS services to achieve seamless functionality:
-
-   + Amazon API Gateway → Exposes secure REST endpoints (/count and /logs)
-
-   + AWS Lambda → Executes backend logic without managing servers
-
-   + Amazon DynamoDB → Stores both the visitor count and detailed logs
-
-   + Amazon CloudWatch → Provides centralized logging and monitoring
-
-   + Amazon S3 + CloudFront (Optional) → Hosts the frontend web application globally
-
-This architecture is event-driven, highly available, and scales automatically to handle any number of visitors.
+> Note: Windows Operating System
 
 #  AWS Setup Instructions
+Step 1️⃣
++ Create the S3 bucket for website hosting (frontend)
+   + S3 → Create bucket.
+   + Bucket name: `my-contact-form-website-<random>` (must be globally unique).
+   + Region: your chosen region.
+   + Uncheck “Block all public access” (we need public reads for a static website). Confirm the warning.
+   + Create the bucket.
+
++ Enable static website hosting
+   + Open the bucket → Properties tab → Static website hosting → Edit.
+   + Enable → Hosting type: “Host a static website”.
+   + Index document: index.html
+   + Save.
+
++ Allow public read (bucket policy)
+   + Permissions tab → Bucket policy → Edit.
+   + Paste this policy (replace YOUR-WEBSITE-BUCKET with your bucket name):
+
+  
+  ```json
+  {
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+      "Sid": "PublicReadForWebsite",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR-WEBSITE-BUCKET/*"
+       }
+    ]
+  }
+  ```
+> Note the Website endpoint shown under Properties → Static website hosting. It looks like: `http://YOUR-WEBSITE-BUCKET.s3-website-<region>.amazonaws.com`.
+
+> You’ll upload index.html here later.
+
+Step 1️⃣
++ Create the S3 bucket for uploads (images)
+   + Bucket name: `my-contact-form-uploads-<random>` (must be globally unique).
+   + Region: your chosen region.
+   + Keep Block all public access ON (uploads remain private)
+   + Create the bucket.
++ Add CORS to the uploads bucket
+   + This allows the browser to PUT the image using the pre-signed URL.
+   + Open the uploads bucket → Permissions → CORS configuration → Edit.
+   + Paste:
+  
+  ```json
+  {
+  "CORSRules": [
+      {
+      "AllowedOrigins": ["*"],
+      "AllowedMethods": ["PUT", "GET", "HEAD"],
+      "AllowedHeaders": ["*"],
+      "ExposeHeaders": ["ETag"],
+      "MaxAgeSeconds": 3000
+      }
+    ]
+  }
+  ```
+> For production, replace "*" in AllowedOrigins with your website origin (e.g., http://YOUR-WEBSITE-BUCKET.s3-website-<region>.amazonaws.com).
+
 Step 1️⃣ 
 + Create the IAM role for Lambda
-  
-  + Sign in to the AWS Management Console.
-  + Open `IAM` → `Roles` → Create role.
+  + `IAM` → `Roles` → Create role.
   + Trusted entity type: AWS service.
   + Use case: Choose Lambda → Next.
-  +  Permissions: Search and attach `AWSLambdaBasicExecutionRole`, `AWSDynamoDBFullAccess`.
+  +  Permissions: Search and attach `AWSLambdaBasicExecutionRole`.
     (This lets Lambda write logs to CloudWatch).
-  + Role name: `lambda-Visitor-count-role `
-  +  Create role`.
+  + Role name: `ServerlessContactFormRole `
+  +  Create role.
++ Open the role you just created → Add permissions → Attach policies → Create inline policy.
+
+  ```json
+  {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowPresignPutObject",
+      "Effect": "Allow",
+      "Action": ["s3:PutObject"],
+      "Resource": "arn:aws:s3:::YOUR-UPLOADS-BUCKET/*"
+    },
+    {
+      "Sid": "DynamoDBWrite",
+      "Effect": "Allow",
+      "Action": ["dynamodb:PutItem"],
+      "Resource": "arn:aws:dynamodb:us-east-1:YOUR-AWS-ACCOUNT-ID:table/ContactMessages"
+      }
+    ]
+  }
+  ```
+   + Review policy, name it. e.g `ServerlessContactFormAccess`, and Create.
 ---
 Step 2️⃣ 
 + Setup DynamoDB Tables
-
-  VisitorCounter Table
-  
-   + Partition key: `id`(String)
-   + Item: `{ "id": "counter", "count": 0 }`
-     
-    VisitLogs Table
-  
-   + Partition key: `visit_id` (String, UUID)
-   + Attributes: `timestamp`, `ip`,`user_agent`
+   + DynamoDB → Tables → Create table.
+   + Table name: `ContactMessages`
+   + Partition key: `id` (String)
+   + Leave other settings default → Create table.
 ---
 Step 3️⃣ 
-+ Create two (2) Lambda functions (`python 3.12`)
++ Create Lambda function (`python 3.12`)
   
   + Go to `AWS Lambda` → Create function.
   + Author from scratch:
-  + Function name: `Visitors Count`
+  + Function name: `ServerlessContactForm`
   + Runtime: `python 3.12`
   + Architecture: `x86_64` (default is fine)
-  + Change default execution role: Use an existing role → select lambda-joke-role
+  + Change default execution role: Use an existing role → select your role e.g `ServerlessContactFormRole`.
   + Click Create function.
-  + Add the code
   + Replace the contents with your lambda code.
-    
-+ Repeat the same process for the second function.
-  
-   + Function name: `Visitors Logs`
-  
+
++ Add environment variables
+
+   + In Configuration → Environment variables, add:
+   + `UPLOAD_BUCKET` = `YOUR-UPLOADS-BUCKET`
+   + `TABLE_NAME` = `ContactMessages`
+   + `ALLOWED_ORIGIN` = `*`
+     
+   > (For production, set to your website origin URL.)
+ 
 + Increase Lambda timeout
   
   + Configuration → General configuration → Edit:
@@ -146,87 +198,51 @@ Step 3️⃣
 ---
 Step 4️⃣
 + Create the API Gateway HTTP API.
-
-   + Go to API Gateway Console → Create API.
    + Choose HTTP API → Click Build.
    + Configure:
-      + Name: `VisitorCounterAPI`
-   + Click Next
+      + Name: `ServerlessContactFormAPI`
      
 + Add an integration
    + Integration target: Lambda Function
-   + Select UpdateVisitorCount
+   + Select your lambda function. e.g `ServerlessContactForm`
 
-Route Settings:
++ Route Settings:
 
-Add a route: GET. 
-   + Endpoint 1: `/count` → Lambda: `visitors_count`
-   + Endpoint 2: `/logs` → Lambda: `visitors_logs`
-   + Click Next
+   + Add route → POST /presign → Integration: your Lambda.
+   + Add route → POST /submit → Integration: your Lambda.
 
-Deploy:
-
-+ Stage name: `prod`
-   + Click Deploy
-   + Copy the Invoke URL (you’ll use this in your frontend).
-
- > Example: https://abc123xyz.execute-api.region.amazonaws.com/count
-    
-+ CORS (important):
++ CORS:
   
-  + In the API’s left sidebar, click CORS (or during creation if prompted).
-  + Enable CORS.
-  + Allow origins: `*`(dev-friendly; you can restrict later to your exact domain)
-  + Allow methods: `GET`, `OPTIONS`
-  + Allow headers: `Content-Type`
-  + Expose headers: (leave empty)
-  + Save.
-  + Deploy (create a new stage before you deploy).
+   + In CORS settings, Enable CORS.
+   + Allow origins: `*` 
+   > (for dev; later restrict to your website origin).
+   + Allow methods: `POST`
+   + Allow headers: `Content-Type`
+
+> Deployments: Ensure Auto-deploy is enabled (HTTP APIs usually auto-deploy).
+
+> Note the Invoke URL, e.g. https://abc123.execute-api.us-east-1.amazonaws.com.
     
 ---
 Step 5️⃣ 
-Build the Frontend (single file).  Create a new file on your PC: `index.html` (any folder). 
-+ Paste the complete html code and change the API GATEWAY URL.
 
-  > Example 1: https://abc123xyz.execute-api.region.amazonaws.com/count
-  > Example 2: https://abc123xyz.execute-api.region.amazonaws.com/logs
++ Frontend (HTML/CSS/JS).  Create a new file on your PC: `index.html` (any folder). 
+      
+> Update the `API_BASE_URL` value to your `API invoke URL`.
 
-+ (Optional) Host the frontend on Amazon S3 (Static Website)
+> No external libraries needed; it’s pure HTML/CSS/JS.
+
++ Upload the frontend
   
-  + Go to `S3` → Create bucket:
-  + Bucket name: unique (e.g., praise-random-joke-123)
-  + Region: same region as your API (recommended)
-  + Uncheck “Block all public access” (for simple static hosting demo).
-  + Acknowledge the warning → Create bucket.
-  + Upload index.html to the bucket.
-  + Bucket → Properties → scroll to Static website hosting:
-  + Enable → Index document: `index.html` → Save.
-  + Copy the Bucket website endpoint (e.g., http://bucket-name-123.s3-website-us-east-1.amazonaws.com).
-  + Permissions → Bucket policy → Edit → paste (replace YOUR_BUCKET_NAME):
-  ```json
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-       {
-      "Sid": "PublicReadForStaticWebsite",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
-        }
-      ]
-    }
-  ```
-> Because your API Gateway CORS is Allow-Origin: *, your S3-hosted page can call it without extra changes. In production, restrict CORS to your exact S3 website origin.
+   + Go to your website bucket → Objects → Upload → add index.html → Upload.
+  
 ---
 # Future Improvements
-   + 🔐 Add authentication for logs endpoint
-     
-   + 📍  Track location with IP geolocation API
-     
-   + 📊 Visualize logs with charts (e.g., Chart.js)
-     
-   + ⏳  Add retention policy to old logs
+
+   + Email notifications via Amazon SES or SNS when a new message arrives.
+   + CloudFront in front of your website bucket to get HTTPS and better performance.
+   + Validation: add stricter checks (email regex, file type whitelist).
+   + TTL (DynamoDB Time To Live) if you want records to expire automatically.
 
 
 
